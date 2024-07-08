@@ -7,7 +7,8 @@
 			@click="onItemClick(item.title, index)"
 			:class="{ isPreview: isPreview, isActive: item.isActive }"
 		>
-			<span>{{ item.title ? item.title : item }}</span>
+			<span v-if='item.title'>{{ item.title }}</span>
+			<span v-else>{{ item }}</span>
 		</div>
 	</div>
 </template>

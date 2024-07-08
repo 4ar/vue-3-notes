@@ -3,12 +3,14 @@
 		<div
 			class="tag-item"
 			v-for="(item, index) in items"
-			:key="index"
-			@click="onItemClick(item.title, index)"
-			:class="{ isPreview: isPreview, isActive: item.isActive }"
+			:key="item"
+			@click="onItemClick(item, index)"
+			:class="{
+				isPreview: isPreview,
+				isActive: activeTags[index] === item,
+			}"
 		>
-			<span v-if='item.title'>{{ item.title }}</span>
-			<span v-else>{{ item }}</span>
+			<span>{{ item }}</span>
 		</div>
 	</div>
 </template>
@@ -19,15 +21,18 @@ export default {
 			type: Array,
 			required: true,
 		},
-
 		isPreview: {
 			type: Boolean,
 			default: false,
 		},
+		activeTags: {
+			type: Array,
+			default: () => [],
+		},
 	},
 	methods: {
-		onItemClick(tag, idx) {
-			this.$emit('onItemClick', { tag, idx });
+		onItemClick(tag, index) {
+			this.$emit('onItemClick', { tag, index });
 		},
 	},
 };

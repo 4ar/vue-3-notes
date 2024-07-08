@@ -2,7 +2,11 @@
 	<div class="note-form__wrapper">
 		<form class="note-form" @submit.prevent="onSubmit">
 			<textarea required v-model="value" placeholder="Type ur note" />
-			<TagsList @onItemClick="handelTagClick" :items="tags" />
+			<TagsList
+				:activeTags="activeTags"
+				@onItemClick="handelTagClick"
+				:items="tags"
+			/>
 			<button class="btn btnPrimary" type="submit">Add new note</button>
 		</form>
 	</div>
@@ -14,36 +18,20 @@ export default {
 	data() {
 		return {
 			value: '',
-			noteTag: new Set(),
-			tags: [
-				{
-					title: 'home',
-					isActive: false,
-				},
-				{
-					title: 'work',
-					isActive: false,
-				},
-				{
-					title: 'travel',
-					isActive: false,
-				},
-			],
+			tags: ['home', 'work', 'travel'],
+			activeTags: [],
 		};
 	},
 	methods: {
 		onSubmit() {
-			this.$emit('on-submit', this.value, this.noteTag);
+			this.$emit('on-submit', this.value, this.activeTags);
 			this.value = '';
-			this.tags = this.tags.map((tag) => (tag.isActive = false));
+			this.activeTags = [];
 		},
-		handelTagClick({ tag, idx }) {
-			if (this.tags[idx]) {
-				this.tags[idx].isActive = !this.tags[idx].isActive;
-			}
-			if (!this.noteTag.delete(tag)) {
-				this.noteTag.add(tag);
-			}
+		handelTagClick({ tag, index }) {
+			this.activeTags.includes(tag)
+				? this.activeTags.splice(index, 1)
+				: (this.activeTags[index] = tag);
 		},
 	},
 };

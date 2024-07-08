@@ -1,3 +1,63 @@
 <template>
-	<p>Home page</p>
+	<div>
+		<p>Home page</p>
+		<Form @onSubmit="handleSubmit" />
+		<List :items="notes" @onRemove="handleRemove" />
+	</div>
 </template>
+
+<script>
+import Form from '@/components/Notes/Form.vue';
+import List from '@/components/Notes/List.vue';
+export default {
+	components: { Form, List },
+	data() {
+		return {
+			notes: [
+				{
+					title: 'Learn Vue 3',
+					tags: ['work'],
+				},
+				{
+					title: 'Finish course',
+					tags: ['work', 'home'],
+				},
+				{
+					title: 'hello',
+					tags: [],
+				},
+			],
+		};
+	},
+	mounted() {
+		this.getNotes();
+	},
+	watch: {
+		notes: {
+			handler(updateList) {
+				localStorage.setItem('notes', JSON.stringify(updateList));
+			},
+			deep: true,
+		},
+	},
+	methods: {
+		getNotes() {
+			const localNotes = localStorage.getItem('notes');
+
+			if (localNotes) {
+				this.notes = JSON.parse(localNotes);
+			}
+		},
+		handleSubmit(title, tags) {
+			const note = {
+				title: title,
+				tags: [...tags],
+			};
+			this.notes.push(note);
+		},
+		handleRemove(idx) {
+			this.notes.splice(idx, 1);
+		},
+	},
+};
+</script>
